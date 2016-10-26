@@ -1,9 +1,679 @@
-\documentclass{scrartcl}
+\documentclass{scrbook}
 
 \usepackage{common}
 
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
 \begin{document}
 
-Hello
+\tableofcontents
+
+\newpage
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Relationale Datenbanken -----------------------------------------------------
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Relationale Datenbanken}
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Relationale Algebra ---------------------------------------------------------
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Relationale Algebra}
+
+\section{Algebraische Struktur}
+% Wiki, Algebraische Struktur
+Eine \emph{algebraische Struktur} (auch \emph{Algebra}) ist eine Menge 
+versehen mit Verknüpfungen (Operationen) auf dieser Menge.
+
+\begin{definition}[Algebraische Struktur / Algebra]
+Eine algebraische Struktur oder allgemeine Algebra ist ein geordnetes Paar
+\begin{displaymath}
+	(A,(f_i)_{i ∈ I})
+\end{displaymath}
+bestehend aus 
+\begin{itemize}
+\item $A$ (nichtleere) Grundmenge / Trägermenge
+\item $(f_i)_{i ∈ I}$ Familie von inneren (endlichstelligen) Verknüpfungen auf $A$,
+	auch Grundoperationen oder fundamentale Operationen genannt.
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Innere (endlichestellige) Verknüpfung]
+Eine innere n-stellige Verknüpfung ist eine Funktion $f: A^n → A$,
+die $n$ Elemente $a_1, \dots, a_n$ aus $A$ immer auf ein (eindutig bestimmtes
+Element $b$ aus $A$ abbildet, $b$ ist dann das Bild von $(a_1, \dots, a_n)$ 
+($b = f(a_1, \dots, a_n)$.
+\end{definition}
+
+\noindent
+Sonderfälle:
+\begin{itemize}
+\item nullstellige innere Verknüpfung: Konstante (meist mit speziellem Konstantensymbol)
+\item einstellige innere Verknüpfung: unäre Funktion von $A$ nach $A$
+\item zweistellige innere Verknüpfung: Operation, binäre Funktion von $A$ nach $A$
+\end{itemize}
+
+\noindent
+Meistens hat eine Algebra nur endlich viele fundamentale Operationen,
+dann schreibt man für die Algebra einfach nur
+\begin{displaymath} 
+(A, f_1, \dots, f_n)
+\end{displaymath}
+
+
+% -----------------------------------------------------------------------------
+% Wiki Relationale Algebra
+\section{Einleitung Relationale Algebra}
+
+In der Theorie der Datenbanken versteht man unter einer
+\emph{Relationenalgebra} oder einer \emph{relationalen Algebra} eine formale Sprache,
+mit der sich Abfragen über einem relationalen Schema formulieren lassen.
+Die Operationen der Algebra erlauben es, Relationen miteinander zu verknüpfen 
+oder zu reduzieren und komplexere Informationen daraus herzuleiten.
+
+Die relationale Algebra definiert Operationen, die sich auf einer Menge von Relationen
+andwenden lassen.
+Damit lassen sich beispielsweise Relationen verknüpfen, filtern oder umbenennen.
+Die Ergebnisse aller Operationen sind ebenfalls Relationen.
+Aus diesem Grund bezeichnet man die Relationenalgebra als 
+abgeschlossen. % ist nicht jede Algebra abgeschlossen?
+
+Ihre Bedeutung hat die Relationenalgebra als theoretische Grundlage für 
+Abfragesprachen in relationalen Datenbanken.
+Hier werden die Operationen der relationalen Algebra in so genannten 
+Datenbankoperatoren implementiert.
+
+% Mehrere Basen
+Für die relationale Algebra gibt es mehrere minimale Mengen von Operationen,
+aus denen alle weiteren Operationen zusammengesetzt werden können.
+Ein übliche minimale Basis besteht aus sechs Operationen:
+\begin{enumerate}
+\item Projektion
+\item Selektion
+\item Kreuzprodukt
+\item Vereinigung
+\item Differenz
+\item Umbenennung
+\end{enumerate}
+
+% (Offene) Rekursion ist in der relationalen Algebra nicht möglich
+Bestimmte Abfragesprachen erweitern die Mächtigkeit der relationalen Algebra:
+beispielsweise ist in der relationalen Algebra die Bildung der transitiven Hülle
+einer Relation (Vorgänger-Von) nicht gegeben.
+
+Im Gegensatz zu Kalkülen ist die relationale Algebra sicher, d.h.
+sie liefert in endlicher Zeit ein endliches Resultat.
+
+
+% -----------------------------------------------------------------------------
+\section{Operationen}
+
+\subsection{Mengenoperationen}
+
+Um Mengenoperationen auf der Relationen $R$ und $S$ durchführen zu können,
+müssen beide miteinander kompatibel sein.
+Die Typkompatibilität zweier Relationen ist gegeben, wenn
+\begin{itemize}
+\item $R$ und $S$ den gleichen Grad (Attributelementzahl) haben
+\item der Wertebereich der Attribute von $R$ und $S$ identisch ist.
+\end{itemize}
+
+Die Typkompatibilität wird auch \emph{Vereinigungsverträglichkeit} genannt.
+
+\paragraph{Vereinigung}
+
+Bei der Vereinigung $R ⋃ S$ werden alle Typel der Relation $R$ 
+mit allen Tupeln der Relation $S$ zu einer einzigen Relation vereint.
+Voraussetzung dafür ist, dass $R$ und $S$ das gleiche Relationschema haben,
+dass heißt, sie haben gleiche Attribute und Attributtypen.
+
+\begin{definition}[Vereinigung]
+\begin{displaymath}
+R ⋃ S = \{t | t ∈ R ∨ t ∈ S \}
+\end{displaymath}
+\end{definition}
+
+Duplikate werden gelöscht.
+
+% \begin{example}
+% 
+% R:
+% KundenNr 	| Vorname 	| Nachname 
+% 23451		| Benji		| Mussler
+% 63234		| Heike		| Graul
+% 03526		| Angela	| Schneider
+% 
+% S: 
+% KundenNr	| Vorname	| Nachname
+% 62672		| Gert		| Nurmig
+% 03526		| Angela	| Schneider
+% 
+% R ⋃ S:
+% KundenNr 	| Vorname 	| Nachname 
+% 23451		| Benji		| Mussler
+% 63234		| Heike		| Graul
+% 62672		| Gert		| Nurmig
+% 03526		| Angela	| Schneider
+%
+% \end{example}
+
+
+\paragraph{Schnittmenge / Intersection}
+
+Das Ergebnis der Durchschnittsoperation $R ⋂ S$ sind alle Tupel,
+die sich sowohl in $R$ als auch in $S$ finden lassen.
+Voraussetzung für den Schnitt ist die Vereinigungsverträglichkeit von $R$ und $S$.
+
+\begin{definition}[Schnittmenge]
+\begin{displaymath}
+R ⋂ S = \{ t | t ∈ R ∧ t ∈ S \}
+\end{displaymath}
+\end{definition}
+
+% \begin{example}
+% 
+% R:
+% KundenNr 	| Vorname 	| Nachname 
+% 23451		| Benji		| Mussler
+% 63234		| Heike		| Graul
+% 03526		| Angela	| Schneider
+% 
+% S: 
+% KundenNr	| Vorname	| Nachname
+% 62672		| Gert		| Nurmig
+% 03526		| Angela	| Schneider
+% 
+% R ⋂ S:
+% KundenNr 	| Vorname 	| Nachname 
+% 03526		| Angela	| Schneider
+%
+% \end{example}
+
+
+\paragraph{Differenz}
+
+Bei der Operation $R \\ S$ (auch $R - S$ werden aus der ersten Relation $R$
+alle Tupel entfernt, die auch in der zweiten Relation $S$ vorhanden sind.
+Voraussetzung ist die Vereinigungsverträglichkeit von $R$ und $S$.
+
+Die Differenz ist keine monotone Operation, daher ist auch die relationale Algebra
+im Vergleich zu anderen Anfragesprachen nicht monoton. (???)
+
+\begin{definition}[Differenz]
+\begin{displaymath}
+R-S = R\\ S = \{ t | t ∈ R ∧ t ∉ S \}
+\end{displaymath}
+\end{definition}
+
+% \begin{example}
+% 
+% R:
+% KundenNr 	| Vorname 	| Nachname 
+% 23451		| Benji		| Mussler
+% 63234		| Heike		| Graul
+% 03526		| Angela	| Schneider
+% 
+% S: 
+% KundenNr	| Vorname	| Nachname
+% 62672		| Gert		| Nurmig
+% 03526		| Angela	| Schneider
+% 
+% R ⋂ S:
+% KundenNr 	| Vorname 	| Nachname 
+% 23451		| Benji		| Mussler
+% 63234		| Heike		| Graul
+%
+% \end{example}
+
+
+
+\subsection{Kartesisches Produkt (Kreuzprodukt)}
+
+Das kartesische Produkt $R × S$ ist eine Operation,
+welche dem kartesischen Produkt aus der Mengenlehre ähnelt.
+
+Das Resultat des kartesischen Produkts ist die Menge aller Kombinationen der 
+Tupel aus $R$ und $S$, jede Zeile der einen Tabelle wird mit jeder Zeile 
+der anderen Tabelle kombiniert.
+
+Wenn alle Merkmale (Spalten) verschieden sind, so umfasst die Resultatstabelle
+die Summe der Merkmale der Ausgangstabellen.
+Gleichnamige Merkmale der zwei Tabellen werden durch Voranstellen 
+des Tabellennamens referenziert. Die Anzahl der Typel (Zeilen) 
+in der Resultatstabelle ist das Ergebnis der Mutliplikation
+der Zeilenanzahlen der Ausgangstabellen.
+
+\begin{definition}
+Zwei beliebige Relationen $R$ und $S$ sind gegeben.
+Das kartesische Produkt ist definiert durch:
+\begin{displaymath}
+R × S = \{(a_1, a_2, \dots, a_n, b_1, b_2, \dots, b_m) | (a_1, a_2, \dots, a_n) ∈ R ∧ (b_1, b_2, \dots, b_m) ∈ S \}
+\end{displaymath}
+\end{definition}
+
+
+% \begin{example}
+% 
+% R:
+% KundenNr 	| Vorname 	| Nachname 
+% 23451		| Benji		| Mussler
+% 63234		| Heike		| Graul
+% 03526		| Angela	| Schneider
+% 
+% S: 
+% Farbe 	| Größe
+% Grün		| XL
+% Blau		| L
+% 
+% R × S:
+% KundenNr 	| Vorname 	| Nachname	| Farbe		| Größe 
+% 23451		| Benji		| Mussler	| Grün		| XL
+% 23451		| Benji		| Mussler	| Blau		| L
+% 63234		| Heike		| Graul		| Grün		| XL
+% 63234		| Heike		| Graul		| Blau		| L
+% 03526		| Angela	| Schneider 	| Grün		| XL
+% 03526		| Angela	| Schneider 	| Blau		| L
+%
+% \end{example}
+
+
+\subsection{Projektion}
+
+Die Projektion entspricht der Projektionsabbildung aus der Mengenlehre
+und kann auch Attributsbeschränkung genannt werden.
+Sie extrahiert einzelne Attribute aus der ursprünglichen Attributmenge
+und ist somit als eine Art Selektion auf Spaltenebene zu verstehen,
+die Projektion blendet Spalten aus.
+Wenn $β$ die Attributsliste ist, schreibt man $π_β(R)$. 
+$β$ heißt auch Projektionsliste.
+Duplikate in der Ergenisrelation werden eliminiert.
+
+\begin{definition}[Projektion]
+Sei $R$ eine Relation über $\{A_1, \dots, A_k\}$ und $β ⊆ \{ A_1, \dots, A_k \}$
+\begin{displaymath}
+π_β(R) = \{ t_β | t ∈ R \}
+\end{displaymath}
+\end{definition}
+
+Voraussetzung: die angegebenen Spalten müssen in $R$ enthalten sein.
+
+
+
+% \begin{example}
+% 
+% R:
+% KundenNr 	| Vorname 	| Nachname 
+% 93923		| Angela	| Meier
+% 23451		| Benji		| Mussler
+% 63234		| Heike		| Graul
+% 03526		| Angela	| Schneider
+%
+% π[Vorname, Nachname] R:
+% Vorname 	| Nachname 
+% Angela	| Meier
+% Benji		| Mussler
+% Heike		| Graul
+% Angela	| Schneider
+%
+% π[Vorname] R:
+% Vorname 	
+% Benji		
+% Heike		
+% Angela	
+
+
+\subsection{Selektion / Restriktion}
+Bei der Selektion kann man mit einem Vergleisausdruck (Prädikat) festlegen,
+welche Tupel in die Ergebnismenge aufgenommen werden sollen.
+Es werden also Tupel (Zeilen) ausgeblendet.
+Man schreibt $σ_{Ausdruck}(R)$.
+\emph{Ausdruck} heißt dann \emph{Selektionsbedingung}.
+
+\begin{definition}[Selektion]
+Sei $R$ eine Relation.
+\begin{displaymath}
+σ_{Ausdruck}(R) = \{ t | t ∈ R ∧ t erfüllt Ausdruck \} 
+\end{displaymath}
+
+\emph{Ausdruck} bezeichnet dabei eine \emph{Formel}. Diese kann bestehen aus:
+\begin{itemize}
+\item Konstantenselektionen \emph{Attribut $Ω$ Konstante, wobei $Ω$ ein passender Vergleichsoperator ist}
+\item Attrubutselektions \emph{Attribut $Ω$ Attribut}
+\item Eine Verknüpfung einer Vormel mit den logischen Prädikaten $∧,∨,¬$ (Klammerung wie üblich).
+\end{itemize}
+\end{definition}
+
+Voraussetzung ist, dass jede angegebene Spalte über den Bedinungsoperator 
+mit dem Vergleichswert vergleichbar sein.
+
+% example
+% R
+% A 	B	C
+% 1	2	4
+% 4	6	7
+% 1 	6	7
+% 8	6	1
+% 
+% R[A=1]
+% A 	B	C
+% 1	2	4
+% 1 	6	7
+% 
+% T[C>6]
+% A 	B	C
+% 4	6	7
+% 1 	6	7
+
+
+
+\paragraph{Join}
+
+Ein Join bezeichnet die beiden hintereinander ausgeführten Operationen
+kartesisches Produkt und Selektion.
+Die Selektionsbedingung ist dabei üblicherweise ein Vergleich von Attributen
+$A Ω B$, wobei $Ω$ ein passender Vergleisoperator ist.
+Man bezeichnet den allgemeinen Vergund auch als $Ω$-Verbund (Theta-Verbund).
+Ein Spezialfall des allgemeinen Verbundes ist der Equi-Join.
+
+\begin{definition}
+Für zwei Relationen $R(A_1, \dots, A_n)$ und $S(B_1, \dots, B_M)$ ist 
+das Ergebnis das allgemeinen Verbundes mit einer Formel \emph{Ausdruck}
+als Selektionsbedingung.
+\begin{displaymath}
+R ⨝_{Ausdruck} S = \{ r ⋃ s | r ∈ R ∧ s ∈ S ∧ Ausdruck \} = σ_{Ausdruck}(R × S)
+\end{displaymath}
+\end{definition}
+
+
+% R:
+% A	B	C	D
+% 1	2 	3	4
+% 4	5	6	7
+% 7	8	9	0
+% 
+% S:
+% E	F	G
+% 1	2	3
+% 7	8	9
+% 
+% R × S:
+% A	B	C	D	E	F	G
+% 1	2 	3	4	1	2	3
+% 1	2 	3	4	7	8	9
+% 4	5	6	7	1	2	3
+% 4	5	6	7	7	8	9
+% 7	8	9	0	1	2	3
+% 7	8	9	0	7	8	9
+% 
+% Join(R, R.A <> S.E, S)
+% A	B	C	D	E	F	G
+% 1	2 	3	4	7	8	9
+% 4	5	6	7	1	2	3
+% 4	5	6	7	7	8	9
+% 7	8	9	0	1	2	3
+
+
+
+
+\paragraph{Equijoin}
+
+Beim Equi-Jin (auch Gleichverbund) wird als erstes das kartesische Produkt gebildet.
+Dann erfolgt die Selektion mit der Bedingung, dass der Inhalt bestimmter Spalten
+identisch sein muss.
+Der Equi-Join ist ein allgemeiner Verbund mit einer Formel der Form $A=B$.
+
+\begin{definition}
+Für die Relationen $R,S$ und dazugehörige Attribute $A$ (ist Attribut von $R$)
+und $B$ (ist Attribut von $S$) ist der Equi-Join
+\begin{displaymath}
+R ⨝_{A=B} S = \{ (r,s) | r ∈ R ∧ S ∧ r_[a] = s_[B] \}
+\end{displaymath}
+\end{definition}
+
+% R:
+% A	B	C	D
+% 1	2 	3	4
+% 4	5	6	7
+% 7	8	9	0
+% 
+% S:
+% E	F	G
+% 1	2	3
+% 7	8	9
+% 
+% R × S:
+% A	B	C	D	E	F	G
+% 1	2 	3	4	1	2	3
+% 1	2 	3	4	7	8	9
+% 4	5	6	7	1	2	3
+% 4	5	6	7	7	8	9
+% 7	8	9	0	1	2	3
+% 7	8	9	0	7	8	9
+%
+% R ⨝_{R.A=S.E} S:
+% A	B	C	D	E	F	G
+% 1	2 	3	4	1	2	3
+% 7	8	9	0	7	8	9
+
+
+\paragraph{Natural Join}
+Der Natural Join setzt sich zusammen aus dem Equi-Join und einer zusätzlichen Ausblendung
+der duplizierten Spalten (Projektionen).
+Der Join erfolgt über die Attribute (Spalten) die in beiden
+Relationen die gleiche Bezeichnung haben.
+Gibt es keine gemeinsamen Attribute, so ist das Ergebnis des natürlichen Verbundes
+das kartesische Produkt.
+Der natürliche Verbund ist kommutativ und assoziativ,
+es gilt $R⨝S = S⨝R$ und $R⨝(S⨝T) = (R ⨝ S) ⨝ T$,
+was eine Rolle bei der Optimierung von Anfragen spielt.
+Die Anzahl der Attribute der Ergebnisrelation ist die Summe der 
+Anzahlen der beiden Ausgangsrelationen abzüglich die Anzahl der Verbundattribute.
+
+\begin{definition} 
+
+Für zwei Relationen $R(A_1, \dots, A_n, B_1, \dots, B_n)$
+und $S(B_1, \dots, BN, C_1, \dots, C_n)$ ist das Ergebnis des natürlichen Verbundes
+\begin{displaymath}
+R⨝S = \{ r ⋃ s[C_1,\dots,C_n] | r ∈ R ∧ s ∈ S ∧ r[B_1,\dots,B_n] = s[B_1,\dots,B_n] \}
+\end{displaymath}
+
+\end{definition}
+
+% R:
+% A	B	C	D
+% 1	2 	3	4
+% 4	5	6	7
+% 7	8	9	0
+% 
+% S:
+% A	F	G
+% 1	2	3
+% 7	8	9
+%
+% Kartesisches Produkt R × S:
+% A	B	C	D	A	E	F
+% 1	2 	3	4	1	2	3
+% 1	2 	3	4	7	8	9
+% 4	5	6	7	1	2	3
+% 4	5	6	7	7	8	9
+% 7	8	9	0	1	2	3
+% 7	8	9	0	7	8	9
+%
+% Equijoin R ⨝_{R.A=S.E} S:
+% A	B	C	D	A	E	F
+% 1	2 	3	4	1	2	3
+% 7	8	9	0	7	8	9
+%
+% Natural Join (R,S)
+% A	B	C	D	E	F
+% 1	2 	3	4 	2	3
+% 7	8	9	0	8	9
+
+
+\paragraph{Semi Join}
+
+Der Semi Join berechnet den Anteil eines Natural Joins, welcher nach einer
+Reduktion auf die linke Relation übrig bleibt.
+
+\begin{definition}
+Für zwei Relationen $R(A_1, \dots, A_n,B_1, \dots, B_n)$ und 
+$S(B_1, \dots, B_n,C_1, \dots, C_n)$ ist das Ergebnis des halben 
+natürlichen Verbundes
+\begin{displaymath}
+R ⋉ S = \{ r | r ∈ R ∧ s ∈ S ∧ r[B_1, \dots, B_n] = s[B_1, \dots, B_n] \}
+\end{displaymath}
+\end{definition}
+
+% R:
+% A	B	C	D
+% 1	2 	3	4
+% 4	5	6	7
+% 7	8	9	0
+% 
+% S:
+% A	F	G
+% 1	2	3
+% 7	8	9
+%
+% Kartesisches Produkt R × S:
+% A	B	C	D	A	E	F
+% 1	2 	3	4	1	2	3
+% 1	2 	3	4	7	8	9
+% 4	5	6	7	1	2	3
+% 4	5	6	7	7	8	9
+% 7	8	9	0	1	2	3
+% 7	8	9	0	7	8	9
+%
+% Equijoin R ⨝_{R.A=S.E} S:
+% A	B	C	D	A	E	F
+% 1	2 	3	4	1	2	3
+% 7	8	9	0	7	8	9
+%
+% Semi Join (R,S) 
+% A	B	C	D		
+% 1	2 	3	4 		
+% 7	8	9	0		
+%
+
+
+\paragraph{Outer Join}
+
+Im Gegensatz zum Equi-Join werden beim Outer-Join auch die Tupel der linken
+(left outer join) bzw. der rechten (right outer join) Tabelle in die
+Ergebnisrelation mit aufgenommen, die keinen Join-Partner finden.  Die nicht
+vorhandenen Attrubute der Join-Relation werden mit Nullwerten aufgefüllt.  Die
+Kombination aus Left- und Right-Outer-Join wird Outer-Join oder Full-Outer-Join
+genannt.
+Dabei werden alle Tupel in die Ergebnisrelation aufgenommen und jene Attribute
+eines Tupels mit Nullwerten aufgefüllt, die keinen Join Partner
+in der jeweils anderen Relation gefungen haben.
+
+Der Outer Join kann mit oder ohne Join-Bedingung verwendet werden (???).
+
+
+% R:
+% A	B	C	D
+% 1	2 	3	4
+% 4	5	6	7
+% 7	8	9	0
+% 
+% S:
+% A	F	G
+% 1	2	3
+% 7	8	9
+%
+% Kartesisches Produkt R × S:
+% A	B	C	D	A	E	F
+% 1	2 	3	4	1	2	3
+% 1	2 	3	4	7	8	9
+% 4	5	6	7	1	2	3
+% 4	5	6	7	7	8	9
+% 7	8	9	0	1	2	3
+% 7	8	9	0	7	8	9
+%
+% Left Outer Join (R, R.A = S.A, S)
+
+% Kartesisches Produkt R × S:
+% A	B	C	D	E	F
+% 1	2 	3	4	2	3
+% 4	5	6	7	NULL	NULL
+% 7	8	9	0	8	9
+
+
+
+\paragraph{Umbenennung}
+
+Durch diese Operation können Attrugyte und Relationen umbenannt werden.
+Diese Operation ist wichtig, um
+\begin{itemize}
+\item Joins von unterschiedlichen benannten Relationen zu ermöglichen
+\item kartesische Produkte zu ermöglichen, wo es gleiche Attributnamen gibt,
+	insbesondere auch mit der gleichen Relation
+\item Mengenoperationen zwischen Relationen mit unterschiedlichen Attributen zu ermöglichen.
+\end{itemize}
+
+Die Schreibweise ist $ρ_[alt → neu](R)$.
+
+\begin{definition}
+\begin{displaymath}
+ρ_[alt → neu](R) = \{ t' | t'(R - alt) = t(R-alt) ∧ t'(neu)=t(alt) \}
+\end{displaymath}
+\end{definition}
+
+Beispiel
+
+% R:
+% A	B 	C
+% 1	2	3
+% 4	5	6
+% 
+% R[B→X]:
+% A	X	C
+% 1	2	3
+% 4	5	6
+
+
+
+% \paragraph{Division}
+
+
+
+\section{Erweiterung der relationalen Algebra}
+
+Um andere Abfragesprachen, speziell SQL, vollständig in die relationale Algebra
+abbilden zu können, ist die relationale Algebra nicht mächtig genug.
+Es gibt z.B. keine Möglichkeit, die SQL-Operatoren 
+\lstinline{GROUP-BY/HAVING}, Aggregatfunktionen und Nullwerte in die relationale
+Algebra zu übersetzen.
+Erweiterungen der relationalen Algebra ermöglichen eine vollständige Abbildung.
+
+
+
+
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% NORMALISIERUNG --------------------------------------------------------------
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Normalisierung}
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Darstellungsformen und Schemata ---------------------------------------------
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Darstellungsformen und Schemata}
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% SQP -------------------------------------------------------------------------
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{SQL}
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Entwurfsmethodik ------------------------------------------------------------
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Entwurfsmethodik}
 
 \end{document}
