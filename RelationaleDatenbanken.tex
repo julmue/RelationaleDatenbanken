@@ -15,6 +15,596 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Relationale Datenbanken}
 
+\section{Relationenschema}
+% https://de.wikipedia.org/wiki/Relationenschema
+
+
+
+% Produkttypen sind Relationen
+% Datenbanktabellen sind Mengen von Instanzierungen von Produkttypen
+% Attribute / Stellen eines Produkttyps = Attribute / Spalten einer Datenbank
+
+\section{Funktionale Abhängigkeit (Functional Dependency)}	% denk an type inference haskell
+% https://de.wikipedia.org/wiki/Funktionale_Abh%C3%A4ngigkeit
+
+Die funktionale Abhängigkeit bildet die Grundlage für die Normalisierung von Realtionenschemata.
+
+Eine Relation wird durch Attribute (Spalten) definiert.
+Bestimmen einige dieser Attribute eindeutig die Werte anderer Attribute,
+so spricht man von funktionaler Abhängigkeit.
+
+Beispiel:
+Kundendatenbank in der die Anschrift und die Telefonnummer eines Kunden eindeutig durch
+seinen Namen zusammen mit seinem Geburtsdatum bestimmt ist.
+Anschrift und Telefonnummer wären funktional abhängig von Name und Geburtsdatum.
+
+Mit Hilfe funktionaler Abhängigkeit lässt sich auf der Begriff Schlüssel definieren:
+
+Bestimmen einige Attribute einer Relation eindeitug die Werte aller Attribute der Relation,
+so spricht man von einem Superschlüssel, dass heißt, jedes Tupel der Relation ist eindeutig
+durch die Werte dieser Attribute bestimmt (Beispiel: Kundennummer die jeden Kunden identifiziert).
+Ein Schlüsselkandidat ist ein minimaler Superschlüssel, dass heißt, keine echte Teilmenge
+der Attribute dieses Schlüssels bestimmen vollständig die Werte aller anderen Attribute der Relation.
+Unter allen Schlüsselkandidaten einer Relation wird ein so genannter Primärschlüssel ausgewählt.
+
+Beispiel:
+R:
+A	B	C
+1   1	3
+1	1	3
+1	2	4
+
+% Dass hier kann einfach als finite funktion f:A × B → C gelesen werden;
+% {C} ist funktional abhängig von {A ,B}
+% bzw. f: B → C
+% {C} ist voll funktional abhängig von {B}
+% Wenn neue Daten / Zeilen dazukommen kann das mit der funktionalen Abhängigkeit
+% auch wieder anders aussehen.
+
+In diesem Beispiel ist $C$ funktional abhängig von $A$ und $B$ ($A, B → C$).
+Der Pfeil kann gelesen werden als \enquote{bestimmt eindeutig}.
+% A und B sind also die Argumente der Funktion die C ausgibt.
+Ist bekannt, welche Werte die ersten beiden Attribute haben, 
+ist damit auch der Wert des letzten Attributs bestimmt.
+
+$C$ ist nicht funktional abhängig von $A$ allein, sondern von $B$ allein
+und der Kombination von $A$ und $B$.
+
+
+\paragraph{Definition}
+
+
+\begin{definition}[Funktionale Abhängigkeit]
+Sei $r(R)$ eine Relation mit dem Relationenschema $R$ und seien $α$ und $β$
+Teilmengen von Attributen von $R$.
+Sei $t ∈ r$ ein Tupel aus $r$. Dann ist $t[α]$ die Einschränkung von $t$ auf die Attribute aus $α$.
+Die funktionale Abhängigkeit $α → β$ ($β$ ist funktional abhängig von $α$) gilt auf $R$,
+wenn für jede zulässige Relation $r(R)$ gilt:
+\begin{displaymath}
+∀t_1,t_2 ∈ r: t_1[α] = t_2[a] ⇒ t_1[β] = t_2[β]
+\end{displaymath}
+
+Die Attributmenge $α$ wird auch \emph{Determinante} von $β$ genannt.
+Die Attributmenge $β$ heißt \emph{voll funktional abhängig} von $α$,
+wenn aus $α$ kein Attribut entfernt werden kann, so dass die Bedingung immer noch gilt.
+\end{definition}
+
+% Bedeutet das, dass die hinzunahme von Daten, die dem Relationenschema entsprechen
+% nicht an der funktionalen Abhängigkeit ändern dürfen?
+
+\paragraph{Axiome von Armstrong}
+
+
+\paragraph{Normalisierung mit funktionalen Axiomen}
+
+
+\paragraph{Attributhülle}
+
+
+% -----------------------------------------------------------------------------
+\section{Determinante}
+% https://de.wikipedia.org/wiki/Determinante_(Informatik)
+
+Die Determinante beschreibt die Abhängigkeit zwischen Attributen einer Relation.
+Sie legt fest, welche Attributmengen den Wert der übrigen Attribute bestimmt.
+
+\begin{definition}[Determinante]
+Ein oder mehrere Attribute eines Relationenschemas fungieren als Determinante,
+wenn andere Attribute des Relationenschemas funktional von diesen abhängen.
+Eine Determinante ist eine Bedingung, welche die möglichen Ausprägungen eines 
+Datenbankschemas einschränkt, denn wenn $A → B$ gilt, dann sind nur solche Ausprägrungen
+von $R$ zulässig, für die gilt:
+Wenn zwei Tupel gleiche Werte für sämmtliche Attribute in $A$ haben, dann müssen in beiden Tupel
+auch die Werte aller Attribute in $B$ übereinstimmen.
+\end{definition}
+
+\paragraph{Determinanten und Schlüssel}
+
+Falls $A$ Determinante von $R$ ist, also innerhalb der Relation $R$ alle anderen Attributwerte
+durch $A$ bestimmt werden, dann heißt $A$ \emph{Superschlüssel} von $R$.
+Des weiteren gilt, dass wenn 
+\begin{itemize}
+\item $A$ eine Determinante von $R$ ist und 
+\item $A$ minimal ist
+\end{itemize}
+dann ist $A$ ein Schlüsselkandidat oder Kandidatenschlüssel, unter denen einer als 
+Primärschlüssel für $R$ ausgewählt werden kann.
+Das Schema $R$ ist dann voll funktional abhängig von $A$.
+
+
+\paragraph{Definition}
+
+Ein oder mehrere Attribute / Spalten eines Relationenschemas fungieren als Determinante,
+wenn andere Attribute des Relationenschemas funktional von diesen abhängen.
+
+
+
+% -----------------------------------------------------------------------------
+\section{Superschlüssel}
+
+
+% -----------------------------------------------------------------------------
+\section{Data Dictionary}
+% Quellen:
+%
+% https://de.wikipedia.org/wiki/Data-Dictionary
+
+% Im Allgemeinen
+Ein \emph{Data-Dictionary} (Datenwörterbuch, Datenkatalog) ist ein Katalog 
+von Metadaten, der die Definitionen und Darstellungsregeln für alle Anwendungsdaten
+eines Unternehmens und die Beziehnungen zwischen den verschiedenen Datenobjekten enthält,
+damit der Datenbestand redundanzfrei und einheitlich strukturiert wird.
+
+(Also ein Verzeichnis aller 
+* Schemata: Relationenschemata / Tabellenschemata / Produkttypen
+* Datenelemente: die Namen ihrer Attribute / Spaltennamen / Feldern
+	(newtype Wrapper 
+* Domänen: (uninterpretierte Basis
+* Business-Rules (sowas wie Smart-Constructors?)
+)
+
+
+% Bei relationalen Datenbanken
+Bei einer relationalen Datenbank ist ein Datenwörterbuch eine Menge von Tabellen
+und Ansichten, die bei Abfragen (etwa in der Sprache SQL) nur gelesen werden (???????).
+Das Data-Dictionary ist wie eine Datenbank aufgebaut, enthält aber nicht die Anwendungsdaten,
+sondern Metadaten, das heißt welche die Struktur der Anwendungsdaten beschreibt
+(und nicht die Inhalte selbst).
+
+Aufbau und Pflege eines solchen Datenkatalogs erfolgen überlicherweise über einen interaktiven
+Dialog oder mit Hilfe einer Datendefinitionssprache (DDL)
+
+
+\subsection{Aktive, passive und integrierte Data-Dictionaries}
+
+Ein \emph{aktives Data-Dictionary} reflektiert jederzeit den aktuellen detaillierten 
+Stand des Datenmodells.
+Änderungen an der Struktur einer Datenbank können direkt in der Pflegeoberfläche des 
+Data-Dictionary erfolgen, oder mit anderen Mitteln, zum Beispiel einem Kommandointerpreter
+einer DDL.
+Unabhängig davon, wie diese Änderungen erfolgen, ist die Aktualität eines aktiven 
+Data-Dictionary immer automatisch gewährleisten.
+(Das SAP ABAP-Dictionary ist also ein aktives Data-Dictionary).
+
+Ein \emph{passives Data-Dictionary} ist diese Synchronität nicht gegeben.
+Änerungen an der Struktur des DBMS müssen im Data-Dictionary manuell nachgepflegt werden.
+
+
+
+
+\subsection{Klassifizierung von Data-Dictionaries nach der Modellierungsebene}
+
+In der Entwicklung und Pflege von Datenmodellen werden unterschiedliche Modellierungsebenen unterschieden:
+\begin{itemize}
+\item Konzeptionelle Ebene:\\
+	In der Regel bezogen auf ein Anwendungsgebiet, in der Wirtschaftsinformatik oft 
+	auch unternehmensweit oder sogar unternehmensübergreifend
+\item Logische Ebene
+\item Physische Ebene:\\
+	Ebene in der das konzeptionelle/logische Datenmodell bezogen auf ein bestimmtes DBMS
+	abgebildet und umgesetzt wird.
+\end{itemize}
+
+Entsprechend den unterschiedlichen Ebenen der Datenmodellierung können die Data-Dictionaries
+nach Unterstützung dieser Modellebenen unterschieden werden.
+Je nach Ebene unterscheiden sich dabei die Data-Dictionaries nach Art, Inhalt und auch
+Datentypen der notwendigen Metadaten,
+aber auch bezüglich ihrer Funktion und Auswertemöglichkeiten.
+(??? Gibts dazu vll. mal ein paar sinnvolle Beispiele ???)
+
+
+\subsubsection{Data-Dictionary zur konzeptionellen/logischen Datenmodellierung}
+
+Zu einem Data-Dictionary zur konzeptionellen/logischen Datenmodellierung gehören:
+\begin{itemize}
+\item Definitionen
+	\begin{itemize}
+	\item Entitäten (Relationen aka Tabellen und deren Attribute)
+	\item Datenelemente
+	\item Beziehungen zwischen den Entitäten
+	\end{itemize}
+\item Betriebswirtschaftliche Definitionen und Erläuterung derselben (??? Im sinn von Business-Rules ???) 
+\end{itemize}
+
+Das Data-Dictionary kann zu vollständigen Ontologien / Klassen / Geschäftsprozessmodellen weiterentwickelt
+werden. Wenn neben der Datenstruktur auch die Methoden zur Datentransformation beschrieben werden,
+spricht man von Repository.
+
+(??? Ist das ABAP-Dictionary dann ein Repository ???)
+
+(??? Sind ER-Diagramme dann zur modellierung der konzeptionellen/logischen Schicht ???)
+
+\subsubsection{Data-Dictionary zur physischen Datenmodellierung}
+
+Zu einem Data-Dictionary zur physischen Datenmodellierung gehören genaue Angaben zu:
+\begin{itemize}
+\item Tabellen und Datenfeldern
+\item Primär- und Fremdschlüsselbeziehungen
+\item Integritätsbedingungen, z.B. Prüfinformationen (??? Business Rules ???)
+\item Stored Procedures und Triggers 
+\item Zugriffslegitimation (Benutzername, Rollen)
+\item physische Datenbankstruktur, z.B. Speicherallokation und Indizes
+\item Verweis- und Verwendungsnachweis
+\end{itemize}
+
+Diese Form ist in jedem DBMS als aktives Data-Dictionary vorhanden, 
+ist jedoch nicht in jedem Fall für den Anwendungsprogrammierer sichtbar.
+Wo ein solches Data-Dictionary nicht sichtbar ist, bildet es dennoch die 
+Datenbankstruktur als Datenbankschema ab.
+
+
+\section{Anwendungsübergreifende Datenkonsistenz}
+
+Einer der Vorteile eines wohldefinierten Data-Dictionary ist die Konsistenz der definierten Datenelemente
+über verschiedene Tabellen einer Datenbank.
+Beispielsweise können verschiedene Tabellen das Datenelement \lstinline{TelefonNr} enthalten;
+mit einem Data-Dictionary kann gewährleistet werden, dass alle Tabellen mit diesem Attribut
+auf das gleiche Datenelement verweisen.
+Somit kann eine datenbankweite Konsistenz und ein Verwensungsnchweis für alle Tabellenfelder 
+und Datenelemente erreicht werden.
+
+
+
+
+
+
+
+% -----------------------------------------------------------------------------
+\section{Datenbankschema}
+	
+
+
+
+
+
+
+% -----------------------------------------------------------------------------
+\section{Datenelement}
+% https://de.wikipedia.org/wiki/Datenelement
+% https://en.wikipedia.org/wiki/Data_element
+% https://en.wikipedia.org/wiki/Data_element_definition
+
+Ein Datenelement ist im Datenmanagement eine atomare Dateneinheit,
+die in einem gegebenen Kontext aus der betrieblichen Realität 
+als Informationsbedarf abgeleitet und inhaltlich festgelegt wird.
+
+(??? Mach mal ein Beispiel ... TelefonNr, PLZ, BLZ, ... ???)
+
+Die Beschreibung eines Datenelements enthält zum Beispiel die folgenden Angaben:
+\begin{itemize}
+\item \emph{Datenelementnamen}
+\item Eine dem Verwendungszweck angemessene \emph{Datenelementdefinition};
+		was bedeutet das Datenelement?
+\item hat einen (oder mehrere) (???) \emph{Repräsentationsterme}:
+		wo, in welcher/n Datenklasse(n) tritt es auf?
+\item hat optional eine \emph{Auflistung der erlaubten Werte} 
+		(??? Sollte das nicht eher in der entsprechenden Domäne enthalten sein ???) 
+\item hat optional eine Liste von Synonymen in anderen Metadatenverzeichnissesn
+\end{itemize}
+
+Datenelemente enthalten keine Daten, sondern beschreiben welche Datenfelder
+in konkreten Datensätzen auftreten können, was sie bedeuten und welce formalen Bedingungen für sie gelten.
+
+% Achtung
+In abweichender Bedeutung werden als \enquote{Datenelement} zum Beispiel auch Attribute/Varibalen
+bei der Deklaration in bestimmten Programmiersprachen bezeichnet.
+Auch wird der Ausdruck umgangssprachlich zum Teil synonym für Datenfeld verwendet.
+
+
+\subsection{Zweck und Anwendungen von Datenelementen (Beispiel)}
+
+In einem Unternehmensdatenmodell können beispielsweise folgende Datenelemente vorhanden sein:
+\begin{itemize}
+\item Kostenstelle
+\item Kundenberaternummer
+\item Kundennummer
+\item Postleitzahl
+\item Geburtsdatum
+\end{itemize}
+
+Beispielhaft wird in den unten aufgelisteten Tabellen pro Datenelement eine 
+eindeutige Datenelement-Kennung, die zugehörige Domäne, eine Kurz-, Mittel- und Lang-Bezeichnung,
+sowie ein Link auf die verbale Definition und Erläuterung in der Unternehmensdatenmodell-Dokumentation
+geführt.
+Die Domäne wird benötigt, wenn aus dem Datenelement Tabellenspalten abgeleitet werden solle.
+
+In einem Projektbezogenen Datenbankentwurf beziehen sich Tabellenspalten,
+insbesondere Schlüsselspalten (Primärschlüssel, Sekundärschlüssel) nach Möglichkeit
+auf ein Datenelement aus dem Gesamtmodell.
+Dabei muss die Beziehung zwischen der Liste aller auf ein Datenelement und der Liste
+aller Tabellenspalten nicht notwendigerweise 1:1 sein.
+Eine Tabelle, die Daten über Kostenrechnungsbelege enthält, kann z.B. unter anderem zwei 
+Tabellenspalten haben:
+\begin{enumerate}
+\item Sender-Kostenstelle
+\item Empfänger-Kostenstelle
+\end{enumerate}
+welche sich beide auf das gleiche Datenelement Kostenstelle beziehen.
+Im Weiteren wird dieses Datenelement normalerweise an zahlreichen anderen Stellen
+im Datenmodell, z.B. in diversen Datenbanktabellen verwendet.
+Um diese Stellen/Verwendungen zu erkennen, steht in der Regel ein 
+Verwendungsnachweis zur Verfügung, beispielsweise in Form eine Data-Dictionarys.
+
+Ein Datenelementkatalog (wie im folgenden Beispiel) ist Teil der Systemdokumentation.
+		
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+Datenelement\_ID	& Domäne		& Bezeichnung(Lang)		& Bezeichnung(Mittel)	& Bezeichnung(Kurz)		& Erläuterung (langtext) \\
+\hline
+DEKst				& Num(10)		& Kostenstelle			& KoStelle				& Kst					& intern.UMD.intranet/Kostenstelle \\
+DEKube				& Num(10)		& Kundenberaternummer	& KuBeraterNr			& KuBe					& intern.UMD.intranet/Kundenberater \\
+DEKnd				& Num(15)		& Kundennummer			& Kunde					& Knd					& untern.UMD.intranet/Kunde \\
+\hline
+\end{tabular}
+
+In manchen Softwarepaketen, z. B. bei SAP werden die Datenelemente in einem aktiven Data-Dictionary geführt,
+dessen Inhalt während der Ausführung des Programms verwendet werden,
+zum Beispiel um die Bildschirmmasken Feldbezeichenr in einer individuell wählbaren Sprache anzuzeige. 
+
+
+
+% -----------------------------------------------------------------------------
+\section{(Daten-) Domäne}
+% http://www.saphub.com/abap-tutorial/what-are-data-elements-and-domains/
+% https://de.wikipedia.org/wiki/Repository
+% https://de.wikipedia.org/wiki/Data-Warehouse-System
+% https://de.wikipedia.org/wiki/Gesch%C3%A4ftsregel
+% https://en.wikipedia.org/wiki/Business_rule
+% https://de.wikipedia.org/wiki/Gespeicherte_Prozedur
+% https://de.wikipedia.org/wiki/Datenbanktrigger
+% https://en.wikipedia.org/wiki/Table_(database)
+% https://en.wikipedia.org/wiki/Data_domain
+
+In Datenbankentwurf und -implementierung wird die Menge aller Werte die ein
+bestimmtes Datenelement beinhalten / annehmen kann als \emph{Datendomäne}
+bezeichnet.
+
+Diese Menge kann finit (Beispiel: Währung, Länder, Zahlenintervall) oder transfinit sein (Ganzzahlen) sein.
+
+Beispiel:
+Eine Datenbanktabelle in der Informationen über Menschen gespeichert werden 
+kann eine Spalte \enquote{Geschlecht} enthalten.
+Diese Spalte als String declariert werden der einen von zwei Werten annehmen kann:
+\enquote{M} für männlich, \enquote{F} für weiblich (vll. auch \enquote{U} für unknown)
+Die Datendomäne für die Geschlechtszeile ist demnach: \enquote{M}, \enquote{F}.
+
+In einem vollständig normalisierten Datenmodell ist die \emph{Referenzdomäne}
+typischerweise in einer Referenztabelle spezifiziert.
+
+Die Geschlechtstabelle hätte demnach zwei Spalten -- eine für männlich \enquote{M}
+und eine für weiblich \enquote{F}
+
+Die Geschlechtstabelle hätte demnach zwei Spalten -- eine für männlich \enquote{M}
+und eine für weiblich \enquote{F}.
+Referenztabellen werden über Fremdschlüssel in Datentabellen eingebunden.
+
+Komplexere Regeln für die Elemente einer Datendomäne können über weitere
+Beschränkungen (Constraints) erzwungen werden;
+Unteranderem auch durch Datenbanktrigger.
+Zum Beispiel muss einer Spalte die nur positive Ganzzahlen beinhalten darf
+die Beschränkung zugeordnet sein, dass die eingetragene Zahl größer Null ist.
+
+
+
+
+% -----------------------------------------------------------------------------
+\section{Datenmodell}
+% https://de.wikipedia.org/wiki/Data-Dictionary
+
+
+% -----------------------------------------------------------------------------
+% MISC
+
+% https://en.wikipedia.org/wiki/Data_hierarchy
+% https://en.wikipedia.org/wiki/Representation_term
+
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\section{Datenbanksprachen} % vll. besser eigenes kapitel
+
+Drei Arten von Datenbanksprachen
+\begin{enumerate}
+\item Data Definition Language (DDL) (\enquote{Datenbeschreibungssprache}):\\
+	Sprache oder Sprachteile für das Anlegen, Ändern und Löschen von Datenstrukturen.
+	Manipulationen des \emph{Data-Dictionaries} eines RDBMS.
+\item Data Control Language (DCL) (\enquote{Datenaufsichtssprache}):\\
+	Sprache oder Sprachteile für die Zugriffskontrolle.
+\item Data Manipulation Language (DML) (\enquote{Datenverarbeitungssprache}):
+	Sprache oder Sprachteile für das Anlegen, Ändern und Löschen von Datenstrukturen.
+\end{enumerate}
+
+Gelegentlich weiter verwendete Kategorien:
+\begin{itemize}
+\item Data Query Language (DQL) (\enquote{Abfragesprache}):\\
+	Sprache für die Abfrage von Daten (sonst DML zugeordnet).
+\item Transaction Control Language (DCL) (\enquote{Transaktionskontrollsprache}):\\
+	Sprache für die Arbeit mit Transaktionen.
+\end{itemize}
+
+% -----------------------------------------------------------------------------
+\subsection{Data Definition Language}
+% https://de.wikipedia.org/wiki/Data-Dictionary
+
+Die \emph{Data Definition Language (DLL)} ist eine Datenbanksprache,
+die verwendet wird um Datenstrukturen und verwandte Elemente zu beschreiben, 
+zu ändern oder zu entfernen.
+Als Datenbanksprache ist DDL die \emph{Datenbeschreibungssprache} einer Datenbank.
+
+Beispiel SQL (SQL kombiniet DDL, DML und DCL)
+
+\begin{lstlisting}
+    CREATE TABLE PROJECT ( PROJNO DECIMAL(6,0) NOT NULL PRIMARY KEY, ...)
+\end{lstlisting}
+
+
+\subsubsection{Data Definition Language in SQL}
+
+Die folgenden Schlüsselwörter bilden das DDL-Fragment in SQL:
+
+\begin{lstlisting}
+# Create Relation / Table
+CREATE TABLE <Relation> ( (<Attribut-Definition> [PRIMARY KEY])+
+    [, FOREIGN KEY ( <Attribut+> ) REFERENCES <Relation> ( Attribut+ )] )
+
+# Delete Relation / Table
+DROP TABLE Relation
+
+# Modify Relation / Table
+ALTER TABLE <Relation> <Alter-Definition>
+
+# 
+CREATE INDEX <Index-Name> ON <Relation> ( <Attribut+> )
+
+#
+DROP INDEX <Index-Name>
+
+# Virtuelle Relationen / Tabellen erstellen 
+CREATE VIEW <Sicht> [( Attribut+ )] AS <SFW-Block> [WITH CHECK OPTION]
+
+# delete View
+DROP VIEW <Sicht>
+\end{lstlisting}
+
+Beispiel
+
+\begin{lstlisting}
+
+CREATE TABLE Student (
+    MatrNr INT NOT NULL PRIMARY KEY,
+    Name varchar(50) NOT NULL)
+
+ALTER TABLE Student ADD Vorname varchar(35)
+
+DROP TABLE Student
+\end{lstlisting}
+
+
+
+
+% -----------------------------------------------------------------------------
+\section{Data Manipulation Language (DML)}
+% https://de.wikipedia.org/wiki/Data_Manipulation_Language
+
+Die \emph{Data Manipulation Lanugage (DML), \enquote{Datenverarbeitungssprache}} 
+ist derjenige Teil einer Datenbanksprache der für folgende Datenmanipulationen verwendet wird:
+\begin{itemize}
+\item Daten zu lesen
+\item Daten zu schreiben
+\item Daten zu ändern 
+\item Daten zu löschen
+\end{itemize}
+
+DML ist die Datenver- oder Datenbearbeitungssprache und schließt die Formulierung von 
+Abfragen ein.
+
+In SQL liegt sie (neben einer DDL und einer DCL) in Form englischer Befehlsklauseln vor:
+
+\begin{lstlisting}
+# Data Deletion
+DELETE FROM bestellungen WHERE bestellstatus IS NULL
+
+# Data Reading
+SELECT postleitzahl, stadt FROM kunden ORDER BY postleitzahl
+\end{lstlisting}
+
+Die SQL-DML kann in den meisten Systemen auch interaktiv als Kommandosprache verwendet werden.
+
+
+\subsection{Sonderstellung der Abfrage}
+
+Die Sprachelemente zur Datenabfrage (bei SQL \lstinline{SELECT,JOIN,WHERE,...})
+werden aufgrund ihrer Sonderstellung manchmal einer eigenen Kategorie 
+\emph{Data Query Language (DQL), \enquote{Datenabfragesprache})} zugeordnet.
+
+
+\subsection{DML Fragment von SQL}
+
+Das DML Fragment von SQL
+
+\begin{lstlisting}
+
+# Inserting Data
+INSERT INTO Relation [( Attribut+ )] VALUES ( ( Konstante+ ) )+
+INSERT INTO Relation [( Attribut+ )] SFW-Block
+
+# Updating Data
+UPDATE Relation SET (Attribut=Ausdruck)+ [WHERE Where-Klausel]
+
+# ??? 
+MERGE INTO Relation USING Quelle ON Join-Klausel
+    WHEN MATCHED UPDATE SET (Attribut=Ausdruck)+
+    WHEN NOT MATCHED [BY TARGET] INSERT (Attributliste) VALUES (Ausdruckliste)
+    [WHEN NOT MATCHED BY SOURCE DELETE]
+
+
+# Deletion of Data / Records from a Relation
+DELETE FROM Relation [WHERE Where-Klausel]
+
+#
+TRUNCATE Relation
+
+\end{lstlisting}
+
+
+
+% -----------------------------------------------------------------------------
+\section{Data Control Language (DCL) }
+% https://de.wikipedia.org/wiki/Data_Control_Language
+
+Die \emph{Data Control Language (DCL) (\enquote{Datenüberwachungssprache})}
+ist das Fragment einer Datenbanksprache, das verwendet wird um Berechtigungen
+zu vergeben oder zu entziehe. DCL ist die \emph{Datenüberwachungssprache}
+einer Datenbank.
+
+\subsection{DCL Fragment von SQL}
+
+Das DCL Fragment von SQL:
+
+\begin{lstlisting}
+
+# Rechte gewähren
+GRANT Operation+ ON Relation TO (PUBLIC|Benutzer) [WITH GRANT OPTION]
+
+# Rechte entziehen
+REVOKE Operation ON Relation FROM (Public|Benutzer)
+\end{lstlisting}
+
+Relation kann auch eine Sicht sein.
+
+
+
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\section{Transaktionen}
+% https://de.wikipedia.org/wiki/Transaktion_(Informatik)
+% https://en.wikipedia.org/wiki/Database_transaction
+
+
+
+
+
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Relationale Algebra ---------------------------------------------------------
@@ -657,6 +1247,368 @@ Erweiterungen der relationalen Algebra ermöglichen eine vollständige Abbildung
 % NORMALISIERUNG --------------------------------------------------------------
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Normalisierung}
+
+% Normalisierung vermeidet Inkonsistenzen
+Unter Normalisierung eines relationalen \emph{Datenbankschemas} (Tabellenstruktur)
+versteht man die Aufteilung von \emph{Attributen} (Tabellenspalten)
+in mehrere \emph{Relationen} (Tabellen) gemäß den \emph{Normalisierungsregeln},
+so dass eine Form entsteht, die keine vermeidbaren Redundanzen mehr enthält.
+(In fast jeder Datenbank treten unvermeidbare Redundanzen auf).
+
+% Redundanzen führen zu Inkonsistenzen
+Ein konzeptionelles Schema, das Datenredundanzen enthält, kann dazu führen,
+dass bei Änderungen der realisierten Datenbank die mehrfach enthaltenen Daten nicht
+konsisten, sondern nur teilweise und unvollständig geändert werden,
+womit sie obsolet oder widersprücklich werden können (Datenbankanomalien).
+
+% Normalisierung ist graduell
+Es gibt verschiedene Ausmaße, in denen ein Datenbankschema gegen Anomalien
+gefeit sein kann (erste, zweite, dritte, \dots Normalform).
+Diese Normalformen sind durch bestimmte formale Anforderungen an das Schema definiert.
+
+% Verfahren: Normalisierung
+Man bringt ein relationales Datenschema in eine Normalform,
+indem man fortschreitend anhand für sie geltender funktionaler Abhängigkeiten
+seine Relationen in einfachere zerlegt, bis keine weitere Zerlegung mehr möglich ist.
+
+% Normalisierung darf nicht verlustbehaftet sein / Satz von Delobel
+Dabei dürfen auf keinen Fall Daten verloren gehen.
+Mit dem Satz von Delobel kann man für einen Zerlegungsschritt formal nachweisen,
+dass er keine Datenverluste mit sich bringt.
+
+% Normalisierung ist automatisierbar
+Normalisiert wird vor allem in der Phase des Entwurfs einer relationalen
+Datenbank.  Für die Normalisierung gibt es Algorithmen (Synthesealgorithmus
+(3NF), Zerlegungsalgorithmus (BCNF), \dots) die automatisiert werden können.
+
+Die Zerlegungsmethodik folgt der \emph{relationalen Entwurfstheorie}.
+
+
+% -----------------------------------------------------------------------------
+\section{Normalformen}
+
+
+\subsection{Erste Normalform (1NF)}
+
+\paragraph{Definition}
+
+\begin{definition}[Erste Normalform]
+Jedes Attribut der Relation muss einen atomaren Wertebereich haben,
+und die Relation muss frei von Wiederholungsgruppen sein.
+\end{definition}
+
+% atomarer Wertebereich
+Kein Attributwertebereich einer Relation in 1NF kann in weitere (sinnvolle)
+Teilbereiche aufespatet werden 
+(Beispiel: Die Adresse darf nicht als Attribut verwendet werden, sondern muss 
+in PLZ, Ort, Straße und Hausnummer aufgeteilt werden).
+
+% Keine Wiederholungsgruppen
+Dass die Relation frei von Wiederholungsgruppen sein muss bedeutet,
+dass Attribute, die gleiche oder gleichartige Information
+enthalten, in eine andere Relation ausgelagert werden müssen.
+
+Ein Beispiel für eine Wiederholungsgruppe wäre eine Spalte \lstinline{Telefon},
+die \emph{mehrere} Telefonnummern enthält oder auch eine Spaltengruppe 
+\lstinline{Telefon 1, Telefon 2, Telefon 3}, wobei im letzteren Fall anzumerken ist,
+dass es sich dabei nicht notwendigerweise um eine Wiederholungsgruppe handeln muss
+(siehe Alternative Formulierung).
+
+
+\paragraph{Praktischer Nutzen}
+
+Abfragen der Datenbank werden durch die 1NF erleichtert bzw. überhaupt erst ermöglicht,
+wenn die Attrubutwertebereiche \emph{atomar} sind.
+So ist es beispielsweise in einem Feld,
+dass einen ganzen Namensstring aus Titel, Vorname und Nachname enthält, schwierig bis 
+unmöglich nach Nachnamen zu sortieren.
+
+
+\paragraph{Alternative Definition}
+
+\begin{definition}[Erste Normalform (alternative Formulierung]
+Alle Attribute enthalten atomare Inhalte, und die Relation hat eine feste Breite.
+\end{definition}
+
+Diese Formulierung bezieht sich darauf, dass es niemals nötig sein darf,
+weitere Attribute (Telefon 4, Telefon 5, ...) in die Relation aufzunehmen,
+weil die Wiederholungszahl der Wiederholungsgruppe zu klein wird.
+Sie ist insofern interessant, als sie helfen kann zu entscheiden,
+ob tatsächlich eine Wiederholungsgruppe vorliegt.
+
+Eine weitere Variante entsteht durch den folgenden Zusatz:
+\emph{\dots und die Relation einen Primärschlüssel hat.}
+Obwohl diese Formulierung so nicht bei Codd nachgelesen werden kann,
+handelt es sich um eine Erweiterung die zu ausgesprochen praxistauglichen Datenstrukturen führt.
+
+
+% \paragraph{Beispiel}
+% 
+% Negativbeispiel: 1NF verletzt
+% 
+% CD_ID	Album								Erscheinungsjahr		Titelliste
+% 4711	Anastacia - Not that Kind			2000					{1. Not That Kind, 2. I'm Outta Love}
+% 4712	Pink Floyd - Wish you where here	1975					{1. Shine On You Crazy Diamond}
+% 4713	Anastacia - Freak of Nature			2001					{1. Paid my Dues}
+% 
+% Verletzungen:
+% 1. Nicht atomar: 
+% 	Das Feld Album enthält die Attributwertebereiche Interpret und Albumtitel,
+% 	Die Wiederholungsgruppe Titelliste enthält sowohl Tracknummer als auch -namen.
+% 2. Enthält Wiederholungsgruppen:
+% 	Das Feld Titelliste enthält eine Menge von Titeln.
+% 
+% 
+% Lösung
+% 
+% CD_ID	Albumtitel			Interpret		Erscheinungsjahr			Track		Titel
+% 4711	Not that Kind		Anastacia		2000						1			Not that kind
+% 4711	Not that Kind		Anastacia		2000						2			I'm Outta Love
+% 4712	Wish you were here	Pink Floyd		1975						1			Shine On you Crazy Diamond
+% 4713	Freak of Nature		Anastacia		2001						1			Paid my dues
+
+
+
+
+
+
+
+\subsection{Zweite Normalform (2NF)}
+
+Eine Relation ist in der zweiten Normalform genau dann, wenn die erste
+Normalform vorligt und kein Nichtprimärattribut (Attribut, das nicht Teil eines
+Schlüsselkandidaten ist) funktional von einer echten Teilmenge eines
+Schlüsselkandidaten abhängt.
+
+Anders gesagt: Jedes nicht-primäre Attribut (nicht Teil eines Schlüssels)
+ist jeweils von allen ganzen Schlüsseln abhängig, nicht nur von einem Teil eines Schlüssels.
+Wichtig ist hierbei, dass die Nichtschlüsselattribute von allen Schlüsseln vollständig abhängen.
+
+Somit gilt, dass Relationen in der 1NF, deren Schlüsselkandidat(en) nicht zusammengesetzt sind,
+sondern aus jeweils (einem) einzelnen Attribut(en) bestehen, automatisch die 2NF erfüllen.
+
+In einer Relation $R(A,B)$ ist das Attribut $B$ von dem Attribut $A$ funktional abhängig,
+falls zu jedem Wert des Attributs $A$ genau ein Wert des Attriguts $B$ gehört.
+In einer Relation $R(S1,S2,B)$ ist das Attribut $B$ von den Schlüsselattributen $S1$ und $S2$
+voll funktional abhängig, wenn $B$ von den zusammengesetzten Attributen $(S1,S2)$ 
+funktional abhängig ist, nicht aber von einem einzelnen Attribut $S1$ oder $S2$.
+
+\begin{definition}[Zweite Normalform (2NF)]
+
+Eine Relation ist in zweiter Normalform gdw. sie
+\begin{enumerate}
+\item in der ersten Normalform ist
+\item für jedes Attribut $a$ der Relation gilt:
+	\begin{itemize}
+	\item $a$ ist Teil eines Schlüsselkandidaten oder
+	\item $a$ ist von einem Schlüsselkandidaten abhängig, aber
+	\item $a$ ist nicht von einer echten Teilmenge eines Schlüsselkandidaten abhängig.
+	\end{itemize}
+\end{enumerate}
+\end{definition}
+
+$a$ ist voll funktional abhängig von jedem Schlüsselkandidaten 
+(wobei die Schlüsselkandidaten auch durch eine Kombination mehrerer Attribute
+gebildet werden können).
+Die 2NF eliminiert alle \emph{partiellen} funktionalen Abhängigkeiten,
+kein Nichtschlüsselattribut ist funktional abhängig von Teilen des Schlüsselkandidaten.
+
+Falls ein Schlüsselkandidat zwei Attribute besitzt, können bei der Zerlegung in
+die 2NF höchstens drei Relationen entstehen.  Fall ein Schlüsselkandidat drei
+Attribute besitzt, können bei der Zerlegung in die 2NF höchstens sieben
+Relationen entstehen.  Das sind jeweils die Anzahl der Teilmengen einer
+gegebenen Menge minus 1 (leere Menge) und entspricht der Anzahl der Elemente in
+der Potenzmenge als Obergrenze.
+
+\paragraph{Praktischer Nutzen}
+
+Die 2NF erzwingt wesentlich \enquote{monothematische} Relationen im Schema:
+jede Relation modelliert nur \emph{einen} Sachverhalt.
+
+Dadurch werden Redundanz und die Damit einhergehende Gefahr von Inkonsistenzen reduziert.
+Nur noch logisch/sachlich zusammengehörige Informationen finden sich in einer Relation.
+Dadurch fällt das Verständnis der Datenstruktur leichter.
+
+
+\paragraph{Beispiel}
+
+Negativbeispiel: 2NF verletzt
+
+\begin{tabular}{l | l | l | l | l l |}
+\hline
+CD\_ID	& Albumtitel			& Interpret		& Erscheinungsjahr	& Track		& Titel \\
+\hline
+4711	& Not that Kind			& Anastacia		& 1999				& 1			& Not that kind \\
+4711	& Not that Kind			& Anastacia		& 1999				& 2			& I'm Outta Love \\
+4711	& Not that Kind			& Anastacia		& 1999				& 3			& Cowboys \& Kisses \\
+4712	& Wish you were here	& Pink Floyd	& 1975				& 1			& Shine On You Crazy Diamond \\
+4713	& Freak of Nature		& Anastacia		& 1999				& 1			& Paid my Dues \\
+\hline
+\end{tabular}
+
+Der Primärschlüssel der Relation ist aus CD\_ID und Track zusammengesetzt,
+Die Felder Albumtitel, Interpret und Erscheinungsjahr hängen aber nur vom Teilschlüssel CD\_ID ab,
+nicht aber vom Feld Track. Das verletzt die 2te Normalform.
+Wäre der Primärschlüssel nicht zusammengesetzt, könnte das nicht passieren.
+
+
+Probleme die sich daraus ergeben:
+Die Informationen aus diesen drei Feldern sind, wie am Beispiel der CD Not That Kind 
+zu erkennen, mehrfach vorhanden (redundant).
+Dadurch entsteht die Gefahr, dass die Integrität der Daten verletzt wird.
+So könnte man den Albumtitel für das Lied Not That Kind in Don't Mind ändern,
+ohne jedoch die entsprechenden Einträge für die Titel 
+I'm Ouuta Love und Cowboys and Kisses zu ändern (\emph{Update-Anomalie}).
+
+\begin{tabular}{| l | l | l | l | l | l |}
+\hline
+CD\_ID	& Albumtitel			& Interpret		& Erscheinungsjahr	& Track		& Titel \\
+\hline
+4711	& I don't Mind			& Anastacia		& 1999				& 1			& Not that kind \\
+4711	& Not that Kind			& Anastacia		& 1999				& 2			& I'm Outta Love \\
+4711	& Not that Kind			& Anastacia		& 1999				& 3			& Cowboys \& Kisses \\
+4712	& Wish you were here	& Pink Floyd	& 1975				& 1			& Shine On You Crazy Diamond \\
+4713	& Freak of Nature		& Anastacia		& 1999				& 1			& Paid my Dues \\
+\hline
+\end{tabular}
+
+Broken.
+
+
+Lösung:
+Die Daten in der Tabelle werden in zwei Tabellen aufgeteilt: CD und Lied.
+
+CD:\\
+\begin{tabular}{| l | l | l | l |}
+\hline
+CD\_ID	& Albumtitel			& Interpret		Erscheinungsjahr \\
+\hline
+4711	& Not That Kind			& Anastacia		1999 \\
+4712	& Wish You Were Here	& Pink Floyd	1965 \\
+4713	& Freak of Nature		& Anastacia		1999 \\
+\hline
+\end{tabular}
+
+Lied:\\
+\begin{tabular}{| l | l | l |}
+\hline
+CD\_ID	& Track		& Titel \\
+\hline
+4711	& 1			& Not That Kind \\
+4711	& 2			& I'm Outta Love \\
+4711	& 3			& Comboys and Kisses \\
+4712	& 1			& Shine On You Crazy Diamond \\
+4713	& 1			& Paid My Dues \\
+\hline
+\end{tabular}
+
+Das Attribut CD\_ID aus der Tabelle Lied bezeichnet man als Fremdschlüssel,
+der auf den Primärschlüssel der Tabelle CD verweist.
+Zugleich stellen die Attribute CD\_ID und Track den zusammengesetzten Primärschlüssel
+der Tabelle Lied dar.
+
+
+
+
+\subsection{Dritte Normalform (3NF)}
+
+Die dritte Normalform ist genau dann erreicht, wenn sich das Relationenschema
+in der 2NF befindet, und 
+kein Nichtschlüsselattribut von einem Schlüsselkandidaten transitiv abhängt.
+Ein Attribut $A_2$ ist vom Schlüsselkandidaten $P_1$ transitiv abhängig,
+wenn es eine Attributmenge $A_1$ gibt, sodass $(P_1 → A_1)$ und $(A_1 → A_2)$
+Formal: $(P_1 → A_1) ∧ (A_1 → A_2) ⇒ (P_1 → A_2)$.
+
+Ein Nichtschlüsselattribut darf nicht von eienr Menge aus Nichtschlüsselattributen 
+abhängig sein.
+Ein Nichtschlüsselattribut darf also nur direkt von einem Primärschlüssel 
+(bzw. einem Schlüsselkandidaten) abhängig sein.
+
+
+\paragraph{Praktischer Nutzen}
+Transitive Abhängigkeiten sind sofort ersichtlich, ohne dass man die Zusammenhänge der Daten kennen muss.
+Sie sind durch die Struktur der Relationen wiedergegeben.
+Außerdem werden verlbiebene thematische Durchmischungen in der Relation behoben:
+nach der 3NF sind die Relationen des Schemas zuverlässig monothematisch.
+
+\paragraph{Alternative Formulierung}
+Die dritte Normalform ist erreicht, wenn sich das Relationenschema in 2NF befindet, 
+und kein Nichtschlüsselattribut Determinante (???) ist.
+
+
+\paragraph{Beispiel}
+
+CD:\\
+\begin{tabular}{| l | l | l | l |}
+\hline
+CD\_ID	& Albumtitel			& Interpret		& Gründungsjahr \\
+\hline
+4711	& Not That Kind			& Anastacia		& 1999 \\
+4712	& Wish You Were Here	& Pink Floyd	& 1965 \\
+4713	& Freak Of Nature		& Anastacia		& 1999 \\
+\hline
+\end{tabular}
+
+Verletzung der 3NF:
+Der Interpret einer CD lässt sich aus CD\_ID bestimmen, 
+das Gründungsjahr der Band/Interpreten hängt wiederum vom Interpreten ab und damit
+transitiv von der CD\_ID.
+
+Problem:
+Datenredundanz; wird zum Beispiel eine neue CD mit einem existierenden Interpreten eingeführt,
+so wird das Gründungsjahr redundant gespeichert.
+
+Lösung:
+
+CD:\\
+\begin{tabular}{| l | l | l |}
+\hline
+CD\_ID	Albumtitel				Interpret\_ID \\
+\hline
+4711	Not That Kind			311 \\
+4712	Wish You where here		311 \\
+4713	Freak of Nature			311 \\
+\hline
+\end{tabular}
+
+Künstler:\\
+\begin{tabular}{| l | l | l |}
+\hline
+Interpret\_ID	Interpret		Gründungsjahr \\
+\hline
+311				Anastacia		1999 \\
+312				Pink Floyd		1965 \\
+\hline
+\end{tabular}
+
+Lied:\\
+\begin{tabular}{| l | l | l |}
+\hline
+CD\_ID	& Track		& Titel \\
+\hline
+4711	& 1			& Not That Kind \\
+4711	& 2			& I'm Outta Love \\
+4711	& 3			& Comboys and Kisses \\
+4712	& 1			& Shine On You Crazy Diamond \\
+4713	& 1			& Paid My Dues \\
+\hline
+\end{tabular}
+
+
+Die Relation wird aufgeteilt, wobei die beiden voneinander abhängigen Daten in eine eigene
+Tabelle ausgelagert werden. Der Schlüssel der neuen Tabelle muss als Fremdschlüssel
+in der alten Tabelle erhalten bleiben.
+Die Relation Lied bleibt unbrührt.
+
+
+
+
+
+
+
+
+
+
 
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
